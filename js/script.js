@@ -412,15 +412,15 @@ async function fetchAllPokemon() {
       }
     };
 
-    await loadDetails(0, INITIAL);
     loading.classList.add("hidden");
+    countBadge.textContent = `Cargando detalles (0/${TOTAL})`;
+    renderSkeletons(INITIAL);
 
-    loadDetails(INITIAL, allPokemon.length).then(() => {
+    loadDetails(0, allPokemon.length).then(() => {
       applyFiltersAndRender();
     }).catch(err => {
       console.warn("No se pudieron cargar todos los Pokémon:", err);
     });
-    countBadge.textContent = `${filteredResults.length || TOTAL} Pokémon`;
   } catch (err) {
     loading.innerHTML = `<div class="error-box">⚠️ Error: ${err.message}. <button onclick="location.reload()">Reintentar</button></div>`;
     throw err;
