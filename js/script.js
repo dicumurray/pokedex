@@ -407,6 +407,7 @@ async function fetchAllPokemon() {
           if (result.status === "fulfilled") batch[idx]._detail = result.value;
         });
         const loaded = Math.min(i + BATCH, end);
+        applyFiltersAndRender();
         countBadge.textContent = `Cargando ${loaded}/${TOTAL}`;
         renderSkeletons(Math.max(0, INITIAL - loaded));
       }
