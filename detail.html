@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detalle - Pokémon</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <a href="index.html" class="back-link">
+    <span class="back-arrow">←</span>
+    <span class="back-text">Volver a la Pokédex</span>
+  </a>
+
+  <main class="detail-container container">
+    <div id="detailLoading" class="loading-overlay">
+      <div class="spinner"></div>
+      <p>Cargando detalles...</p>
+    </div>
+
+    <div id="detailContent" class="detail-content hidden">
+      <!-- Header con imagen grande y número -->
+      <div class="detail-header">
+        <div class="detail-number-badge" id="detailNumber">#001</div>
+        <div class="detail-image-wrapper">
+          <img id="detailImg" src="" alt="Pokémon" class="detail-img">
+        </div>
+        <h1 id="detailName" class="detail-name"></h1>
+        <div id="detailTypes" class="detail-types"></div>
+      </div>
+
+      <div class="detail-grid">
+        <!-- Columna izquierda: stats -->
+        <div class="detail-stats">
+          <h2>📊 Estadísticas</h2>
+          <div class="stats-grid" id="detailStats"></div>
+          <div class="stats-total" id="detailStatTotal"></div>
+        </div>
+
+        <!-- Columna derecha: info -->
+        <div class="detail-info">
+          <section class="info-card">
+            <h3>📝 Descripción</h3>
+            <p id="detailDesc" class="detail-desc"></p>
+          </section>
+
+          <section class="info-card">
+            <h3>🧬 Especies</h3>
+            <p id="detailSpecies" class="detail-species"></p>
+          </section>
+
+          <section class="info-card">
+            <h3>📏 Tamaño y Peso</h3>
+            <div class="size-table" id="detailSize"></div>
+          </section>
+
+          <section class="info-card">
+            <h3>🎯 Habilidades</h3>
+            <div id="detailAbilities" class="abilities-list"></div>
+          </section>
+
+          <section class="info-card">
+            <h3>🌍 Versiones</h3>
+            <div id="detailVersions" class="versions-list"></div>
+          </section>
+        </div>
+      </div>
+
+      <!-- Imagen de espalda -->
+      <div class="detail-back">
+        <img id="detailBackImg" src="" alt="Pokémon espalda" class="detail-back-img">
+      </div>
+    </div>
+  </main>
+
+  <script src="js/detail.js"></script>
+</body>
+</html>
