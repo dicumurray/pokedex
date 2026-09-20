@@ -5,7 +5,7 @@
 // Los datos de Pokémon se cargan desde la API (no se cachean,
 // salvo los detalles visitados que se guardan en IndexedDB).
 
-const CACHE_NAME = "pokedex-v1.0.2";
+const CACHE_NAME = "pokedex-v1.0.3";
 const SHELL_FILES = [
   "./",
   "./index.html",

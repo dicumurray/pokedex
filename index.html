@@ -89,11 +89,11 @@
     </p>
   </footer>
 
-  <script src="js/script.js?v=8fbcf9e"></script>
+  <script src="js/script.js?v=fix-20260920"></script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js').then(reg => {
+        navigator.serviceWorker.register('sw.js?v=fix-20260920').then(reg => {
           console.log('SW registrado:', reg.scope);
         }).catch(err => console.error('SW error:', err));
       });
