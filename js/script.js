@@ -396,20 +396,31 @@ async function fetchAllPokemon() {
     const res = await fetchWithRetry(`${API}/pokemon?limit=${TOTAL}`, 3);
     const data = await res.json();
     allPokemon = data.results;
-    for (let i = 0; i < allPokemon.length; i += BATCH) {
-      const batch = allPokemon.slice(i, i + BATCH);
-      const results = await Promise.allSettled(
-        batch.map(p => fetchWithRetry(p.url, 2).then(r => r.json()))
-      );
-      results.forEach((result, idx) => {
-        if (result.status === "fulfilled") batch[idx]._detail = result.value;
-      });
-      const loaded = Math.min(i + BATCH, TOTAL);
-      countBadge.textContent = `Cargando ${loaded}/${TOTAL}`;
-      renderSkeletons(loaded);
-    }
-    countBadge.textContent = `${filteredResults.length || TOTAL} Pokémon`;
+
+    const loadDetails = async (start, end) => {
+      for (let i = start; i < end; i += BATCH) {
+        const batch = allPokemon.slice(i, Math.min(i + BATCH, end));
+        const results = await Promise.allSettled(
+          batch.map(p => fetchWithRetry(p.url, 2).then(r => r.json()))
+        );
+        results.forEach((result, idx) => {
+          if (result.status === "fulfilled") batch[idx]._detail = result.value;
+        });
+        const loaded = Math.min(i + BATCH, end);
+        countBadge.textContent = `Cargando ${loaded}/${TOTAL}`;
+        renderSkeletons(Math.max(0, INITIAL - loaded));
+      }
+    };
+
+    await loadDetails(0, INITIAL);
     loading.classList.add("hidden");
+
+    loadDetails(INITIAL, allPokemon.length).then(() => {
+      applyFiltersAndRender();
+    }).catch(err => {
+      console.warn("No se pudieron cargar todos los Pokémon:", err);
+    });
+    countBadge.textContent = `${filteredResults.length || TOTAL} Pokémon`;
   } catch (err) {
     loading.innerHTML = `<div class="error-box">⚠️ Error: ${err.message}. <button onclick="location.reload()">Reintentar</button></div>`;
     throw err;
