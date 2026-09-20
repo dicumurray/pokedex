@@ -85,7 +85,7 @@ function init() {
     applyFiltersAndRender();
     setupAutoLoadMore();
   }).catch(err => {
-    loading.innerHTML = <div class="error-box">⚠️ Error cargando Pokédex: ${err.message}. <button onclick="location.reload()">Reintentar</button></div>;
+    loading.innerHTML = `<div class="error-box">⚠️ Error cargando Pokédex: ${err.message}. <button onclick="location.reload()">Reintentar</button></div>`;
   });
 }
 
@@ -104,7 +104,7 @@ function toggleTheme() {
 // ── Type filters ──
 function buildTypeFilters() {
   typeFilters.innerHTML = TYPES.map(t =>
-    <button class="type-filter-btn" data-type="${t}" style="--tc:${TYPE_COLORS[t]}">${cap(t)}</button>
+    `<button class="type-filter-btn" data-type="${t}" style="--tc:${TYPE_COLORS[t]}">${cap(t)}</button>`
   ).join("");
 }
 function onTypeFilterClick(e) {
@@ -177,7 +177,7 @@ function hideAutocomplete() {
 // ── Filtros ──
 function buildGenerationOptions() {
   generationFilter.innerHTML = '<option value="all">Todas</option>' +
-    GENS.map(g => <option value="${g}">${GEN_MAP[g]}</option>).join("");
+    GENS.map(g => `<option value="${g}">${GEN_MAP[g]}</option>`).join("");
 }
 function clearFilters() {
   activeTypes.clear();
@@ -194,7 +194,7 @@ function applyFiltersAndRender() {
   filteredResults = applyFilters(allPokemon);
   renderedCount = Math.min(INITIAL, filteredResults.length);
   renderGrid(filteredResults.slice(0, renderedCount));
-  countBadge.textContent = ${filteredResults.length} Pokémon;
+  countBadge.textContent = `${filteredResults.length} Pokémon`;
   updateLoadMore();
   renderSkeletons(0);
 }
@@ -245,7 +245,7 @@ function renderGrid(list) {
 
 function createCard(p, d, i) {
   const id = d.id;
-  const isFav = isFav(id);
+  const favorite = isFav(id);
   const img = d.sprites.other?.official_artwork?.front_default
     || d.sprites.other?.showdown?.front_default
     || d.sprites.front_default;
@@ -255,10 +255,10 @@ function createCard(p, d, i) {
 
   const card = document.createElement("div");
   card.className = "pokemon-card";
-  card.style.animationDelay = ${(i % 20) * 0.03}s;
+  card.style.animationDelay = `${(i % 20) * 0.03}s`;
   card.dataset.id = id;
   card.innerHTML = `
-    <div class="card-fav-star ${isFav ? "favorite" : ""}" data-id="${id}" title="Marcar como favorito">★</div>
+    <div class="card-fav-star ${favorite ? "favorite" : ""}" data-id="${id}" title="Marcar como favorito">★</div>
     <span class="card-number" style="background:${TYPE_COLORS[pt]};color:#fff">#${String(id).padStart(3,"0")}</span>
     <div class="card-img-wrapper">
       <img class="card-img" src="${img}" alt="${cap(p.name)}" loading="lazy"
@@ -267,13 +267,13 @@ function createCard(p, d, i) {
     <div class="card-name">${cap(p.name)}</div>
     <div class="card-types">
       <span class="type-badge" style="background:${TYPE_COLORS[pt]};color:#fff;border:1px solid ${TYPE_COLORS[pt]}">${cap(pt)}</span>
-      ${st ? <span class="type-badge" style="background:${TYPE_COLORS[st]};color:#fff;border:1px solid ${TYPE_COLORS[st]}">${cap(st)}</span> : ""}
+      ${st ? `<span class="type-badge" style="background:${TYPE_COLORS[st]};color:#fff;border:1px solid ${TYPE_COLORS[st]}">${cap(st)}</span>` : ""}
     </div>
-    ${gen ? <div class="card-gen">${gen}</div> : ""}
+    ${gen ? `<div class="card-gen">${gen}</div>` : ""}
   `;
   card.addEventListener("click", (e) => {
     if (e.target.closest(".card-fav-star")) { toggleFav(id); e.stopPropagation(); return; }
-    window.location.href = detail.html?id=${id};
+    window.location.href = `detail.html?id=${id}`;
   });
   card.querySelector(".card-fav-star").addEventListener("click", (e) => {
     e.stopPropagation();
@@ -294,14 +294,14 @@ function loadMore() {
   }
   const batch = Math.min(BATCH, rem);
   const next = renderedCount + batch;
-  loadMoreBtn.textContent = Cargando... (${renderedCount}/${filteredResults.length});
+  loadMoreBtn.textContent = `Cargando... (${renderedCount}/${filteredResults.length})`;
   loadMoreBtn.disabled = true;
   const items = filteredResults.slice(renderedCount, next);
   items.forEach((p, i) => {
     grid.appendChild(createCard(p, p._detail, renderedCount + i));
   });
   renderedCount = next;
-  loadMoreBtn.textContent = Cargar más Pokémon (${renderedCount}/${filteredResults.length}) ↓;
+  loadMoreBtn.textContent = `Cargar más Pokémon (${renderedCount}/${filteredResults.length}) ↓`;
   loadMoreBtn.disabled = false;
   updateLoadMore();
 }
@@ -310,7 +310,7 @@ function updateLoadMore() {
   if (renderedCount >= filteredResults.length) loadMoreContainer.classList.add("hidden");
   else {
     loadMoreContainer.classList.remove("hidden");
-    loadMoreBtn.textContent = Cargar más Pokémon (${renderedCount}/${filteredResults.length}) ↓;
+    loadMoreBtn.textContent = `Cargar más Pokémon (${renderedCount}/${filteredResults.length}) ↓`;
   }
 }
 
@@ -372,12 +372,12 @@ async function fetchWithRetry(url, maxRetries = 3) {
   for (let i = 0; i < maxRetries; i++) {
     try {
       const res = await fetch(url);
-      if (!res.ok) throw new Error(HTTP ${res.status}: ${res.statusText});
+      if (!res.ok) throw new Error(`HTTP ${res.status}: ${res.statusText}`);
       return res;
     } catch (err) {
       if (i === maxRetries - 1) throw err;
       const delay = Math.pow(2, i) * 1000;
-      console.warn(Retry ${i+1}/${maxRetries} for ${url} after ${delay}ms);
+      console.warn(`Retry ${i + 1}/${maxRetries} for ${url} after ${delay}ms`);
       await new Promise(r => setTimeout(r, delay));
     }
   }
@@ -386,7 +386,7 @@ async function fetchWithRetry(url, maxRetries = 3) {
 async function fetchAllPokemon() {
   loading.classList.remove("hidden");
   try {
-    const res = await fetchWithRetry(${API}/pokemon?limit=${TOTAL}, 3);
+    const res = await fetchWithRetry(`${API}/pokemon?limit=${TOTAL}`, 3);
     const data = await res.json();
     allPokemon = data.results;
     for (let i = 0; i < allPokemon.length; i += BATCH) {
@@ -398,13 +398,13 @@ async function fetchAllPokemon() {
         if (result.status === "fulfilled") batch[idx]._detail = result.value;
       });
       const loaded = Math.min(i + BATCH, TOTAL);
-      countBadge.textContent = Cargando ${loaded}/${TOTAL};
+      countBadge.textContent = `Cargando ${loaded}/${TOTAL}`;
       renderSkeletons(loaded);
     }
-    countBadge.textContent = ${filteredResults.length || TOTAL} Pokémon;
+    countBadge.textContent = `${filteredResults.length || TOTAL} Pokémon`;
     loading.classList.add("hidden");
   } catch (err) {
-    loading.innerHTML = <div class="error-box">⚠️ Error: ${err.message}. <button onclick="location.reload()">Reintentar</button></div>;
+    loading.innerHTML = `<div class="error-box">⚠️ Error: ${err.message}. <button onclick="location.reload()">Reintentar</button></div>`;
     throw err;
   }
 }
