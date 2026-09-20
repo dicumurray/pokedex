@@ -368,17 +368,24 @@ function renderSkeletons(n) {
   ).join("");
 }
 
-async function fetchWithRetry(url, maxRetries = 3) {
+async function fetchWithRetry(url, maxRetries = 3, timeoutMs = 12000) {
   for (let i = 0; i < maxRetries; i++) {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), timeoutMs);
     try {
-      const res = await fetch(url);
+      const res = await fetch(url, { signal: controller.signal });
       if (!res.ok) throw new Error(`HTTP ${res.status}: ${res.statusText}`);
       return res;
     } catch (err) {
+      if (err.name === "AbortError") {
+        err = new Error(`Tiempo de espera agotado (${timeoutMs / 1000}s)`);
+      }
       if (i === maxRetries - 1) throw err;
       const delay = Math.pow(2, i) * 1000;
       console.warn(`Retry ${i + 1}/${maxRetries} for ${url} after ${delay}ms`);
       await new Promise(r => setTimeout(r, delay));
+    } finally {
+      clearTimeout(timeout);
     }
   }
 }
