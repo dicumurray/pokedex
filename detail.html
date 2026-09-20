@@ -3,12 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Detalle completo de Pokémon — estadísticas, evolución, movimientos, tipos, habilidades">
+  <meta name="theme-color" content="var(--bg-primary)">
+  <meta name="color-scheme" content="dark light">
   <title>Detalle - Pokémon</title>
   <link rel="stylesheet" href="css/style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E⚡%3C/text%3E%3C/svg%3E">
 </head>
 <body>
+  <button id="themeToggle" class="theme-toggle" aria-label="Cambiar tema" title="Cambiar tema">
+    <span class="theme-icon theme-icon-sun">☀️</span>
+    <span class="theme-icon theme-icon-moon">🌙</span>
+  </button>
+
   <a href="index.html" class="back-link">
     <span class="back-arrow">←</span>
     <span class="back-text">Volver a la Pokédex</span>
@@ -17,63 +27,117 @@
   <main class="detail-container container">
     <div id="detailLoading" class="loading-overlay">
       <div class="spinner"></div>
-      <p>Cargando detalles...</p>
+      <p class="loading-text">Cargando detalles...</p>
     </div>
 
     <div id="detailContent" class="detail-content hidden">
-      <!-- Header con imagen grande y número -->
+      <div id="detailError" class="detail-error hidden"></div>
+
       <div class="detail-header">
         <div class="detail-number-badge" id="detailNumber">#001</div>
         <div class="detail-image-wrapper">
-          <img id="detailImg" src="" alt="Pokémon" class="detail-img">
+          <img id="detailImg" src="" alt="" class="detail-img" loading="eager">
         </div>
         <h1 id="detailName" class="detail-name"></h1>
         <div id="detailTypes" class="detail-types"></div>
+        <div class="detail-species-badge" id="detailSpeciesBadge"></div>
+      </div>
+
+      <div class="quick-stats">
+        <div class="quick-stat"><span class="quick-stat-label">Altura</span><span class="quick-stat-value" id="quickHeight">—</span></div>
+        <div class="quick-stat"><span class="quick-stat-label">Peso</span><span class="quick-stat-value" id="quickWeight">—</span></div>
+        <div class="quick-stat"><span class="quick-stat-label">Categoría</span><span class="quick-stat-value" id="quickCategory">—</span></div>
+        <div class="quick-stat"><span class="quick-stat-label">Base Stats</span><span class="quick-stat-value" id="quickStatTotal">—</span></div>
+        <div class="quick-stat"><span class="quick-stat-label">Capture Rate</span><span class="quick-stat-value" id="quickCaptureRate">—</span></div>
+        <div class="quick-stat"><span class="quick-stat-label">Growth</span><span class="quick-stat-value" id="quickGrowth">—</span></div>
       </div>
 
       <div class="detail-grid">
-        <!-- Columna izquierda: stats -->
-        <div class="detail-stats">
-          <h2>📊 Estadísticas</h2>
-          <div class="stats-grid" id="detailStats"></div>
-          <div class="stats-total" id="detailStatTotal"></div>
+        <div class="detail-stats-col">
+          <div class="card-section">
+            <h2 class="section-title">📊 Estadísticas Base</h2>
+            <div class="stats-rows" id="detailStats"></div>
+            <div class="stat-total-row">
+              <span class="stat-total-label">Total Base Stats</span>
+              <span class="stat-total-value" id="detailStatTotal">—</span>
+              <span class="stat-total-compare" id="detailStatCompare"></span>
+            </div>
+          </div>
+          <div class="card-section">
+            <h2 class="section-title">📈 Comparación con promedio</h2>
+            <div class="stats-comparison" id="detailStatsComparison"></div>
+          </div>
         </div>
 
-        <!-- Columna derecha: info -->
-        <div class="detail-info">
-          <section class="info-card">
-            <h3>📝 Descripción</h3>
-            <p id="detailDesc" class="detail-desc"></p>
-          </section>
-
-          <section class="info-card">
-            <h3>🧬 Especies</h3>
-            <p id="detailSpecies" class="detail-species"></p>
-          </section>
-
-          <section class="info-card">
-            <h3>📏 Tamaño y Peso</h3>
-            <div class="size-table" id="detailSize"></div>
-          </section>
-
-          <section class="info-card">
-            <h3>🎯 Habilidades</h3>
-            <div id="detailAbilities" class="abilities-list"></div>
-          </section>
-
-          <section class="info-card">
-            <h3>🌍 Versiones</h3>
-            <div id="detailVersions" class="versions-list"></div>
-          </section>
+        <div class="detail-info-col">
+          <div class="card-section">
+            <h2 class="section-title">📝 Descripción</h2>
+            <p class="detail-desc" id="detailDesc"></p>
+            <div class="flavor-versions" id="flavorVersions"></div>
+          </div>
+          <div class="card-section">
+            <h2 class="section-title">🧬 Especies</h2>
+            <div class="species-info" id="detailSpecies"></div>
+            <div class="species-extra" id="detailSpeciesExtra"></div>
+          </div>
+          <div class="card-section">
+            <h2 class="section-title">🎯 Habilidades</h2>
+            <div class="abilities-list" id="detailAbilities"></div>
+          </div>
+          <div class="card-section">
+            <h2 class="section-title">🏋️ Entrenamiento</h2>
+            <div class="training-info">
+              <div class="training-row"><span class="training-label">Grupos de Huevo</span><span class="training-value" id="detailEggGroups">—</span></div>
+              <div class="training-row"><span class="training-label">Ratio de Sexo</span><span class="training-value" id="detailGenderRatio">—</span></div>
+              <div class="training-row"><span class="training-label">Tasa de Captura</span><span class="training-value" id="detailCaptureRate">—</span></div>
+              <div class="training-row"><span class="training-label">Growth Rate</span><span class="training-value" id="detailGrowthRate">—</span></div>
+            </div>
+          </div>
+          <div class="card-section">
+            <h2 class="section-title">🌍 Versiones</h2>
+            <div class="versions-list" id="detailVersions"></div>
+          </div>
+          <div class="card-section">
+            <h2 class="section-title">💪 Efectividad de Tipos</h2>
+            <div class="type-effectiveness" id="detailTypeEffectiveness"></div>
+          </div>
         </div>
       </div>
 
-      <!-- Imagen de espalda -->
-      <div class="detail-back">
-        <img id="detailBackImg" src="" alt="Pokémon espalda" class="detail-back-img">
+      <div class="evolution-section">
+        <h2 class="section-title">🧬 Cadena de Evolución</h2>
+        <div class="evolution-chain-container" id="detailEvolutionChain"></div>
+      </div>
+
+      <div class="moves-section">
+        <h2 class="section-title">🎯 Movimientos Aprendidos</h2>
+        <div class="moves-controls">
+          <span id="movesCount" class="moves-count"></span>
+          <button id="movesToggleBtn" class="moves-toggle-btn">Mostrar todos</button>
+        </div>
+        <div class="moves-table-wrapper">
+          <table class="moves-table" id="detailMoves">
+            <thead>
+              <tr>
+                <th>#</th><th>Movimiento</th><th>Tipo</th><th>Categoría</th>
+                <th>PP</th><th>Poder</th><th>Precisión</th><th>Nivel</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="detail-back-section">
+        <span class="back-label">🦋 Espalda</span>
+        <img id="detailBackImg" src="" alt="" class="detail-back-img" loading="lazy">
       </div>
     </div>
   </main>
+
+  <footer class="footer">
+    <p>Hecho con ❤️ usando <a href="https://pokeapi.co/" target="_blank" rel="noopener">PokeAPI</a></p>
+  </footer>
 
   <script src="js/detail.js"></script>
 </body>
