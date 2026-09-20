@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pokédex - Todos los Personajes</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="hero-header">
+    <div class="header-content">
+      <h1>⚡ Pokédex Completa</h1>
+      <p class="subtitle">Todos los personajes de Pokémon</p>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="🔍  Buscar Pokémon por nombre o número..." autocomplete="off">
+      <span id="countBadge" class="count-badge">Cargando...</span>
+    </div>
+
+    <div id="pokemonGrid" class="pokemon-grid">
+      <!-- Las tarjetas se injectan aquí -->
+    </div>
+
+    <div id="loading" class="loading-overlay">
+      <div class="spinner"></div>
+      <p>Cargando Pokédex...</p>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>Hecho con ❤️ usando <a href="https://pokeapi.co/" target="_blank">PokeAPI</a></p>
+  </footer>
+
+  <script src="js/script.js"></script>
+</body>
+</html>
